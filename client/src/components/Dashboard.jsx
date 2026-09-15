@@ -26,6 +26,92 @@ export const Dashboard = ({ stats, setActiveTab, onQuickVoucher }) => {
 
   return (
     <div>
+      {/* Cooperative Identity Banner */}
+      <div style={{
+        backgroundColor: '#ffffff',
+        border: '1px solid var(--border-color)',
+        borderRadius: 'var(--radius-lg)',
+        padding: '16px 20px',
+        marginBottom: '24px',
+        boxShadow: 'var(--shadow-sm)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '16px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            borderRadius: '50%',
+            backgroundColor: '#ffffff',
+            padding: '2px',
+            boxShadow: '0 4px 12px rgba(6, 78, 59, 0.15)',
+            border: '2px solid #10b981',
+            flexShrink: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <img
+              src="/logo.png"
+              alt="Positive SACCOS"
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              onError={(e) => { e.target.style.display = 'none'; }}
+            />
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#064e3b', margin: 0 }}>
+                {lang === 'ne' ? (orgSettings?.name_ne || 'पोजिटिभ बचत तथा ऋण सहकारी संस्था लि.') : (orgSettings?.name_en || 'Positive Saving & Credit Co-operative Ltd.')}
+              </h2>
+              <span style={{
+                backgroundColor: '#ecfdf5',
+                color: '#047857',
+                fontSize: '11px',
+                fontWeight: 700,
+                padding: '2px 8px',
+                borderRadius: '12px',
+                border: '1px solid #a7f3d0'
+              }}>
+                स्था. २०७९
+              </span>
+            </div>
+            <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#059669', marginTop: '2px' }}>
+              “साझा बचत, साझा समृद्धि” &bull; <span style={{ color: '#4b5563', fontWeight: 500 }}>सहयोग, आत्मनिर्भरता र समृद्धिको यात्रा</span>
+            </div>
+            <div style={{ fontSize: '11px', color: '#6b7280', marginTop: '3px' }}>
+              गोकर्णेश्वर-८, जोरपाटी, नेपाल | फोन: +977-1-9768595892 | इमेल: positivesaccos@gmail.com
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{
+            backgroundColor: '#f8fafc',
+            border: '1px solid #e2e8f0',
+            borderRadius: 'var(--radius-md)',
+            padding: '6px 12px',
+            fontSize: '11.5px',
+            color: '#334155'
+          }}>
+            <div><strong>दर्ता नं:</strong> १७/०७९/८०</div>
+            <div><strong>प्यान नं:</strong> ६२४३३८४७१</div>
+          </div>
+          {onQuickVoucher && (
+            <button
+              onClick={onQuickVoucher}
+              className="btn btn-primary"
+              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+            >
+              <PlusCircle size={16} />
+              <span>{t.dash.btnCreateVoucher}</span>
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* 1. Statistics Grid */}
       <div className="dashboard-grid">
         {/* Today's Vouchers */}

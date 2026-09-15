@@ -306,9 +306,15 @@ router.post('/', authenticateToken, requirePermission('voucher:create'), (req, r
     });
   }
 
-  // Validation 3: Double-Entry Accounting Rule: Total Debit == Total Credit
-  let totalDebit = 0;
-  let totalCredit = 0;
+  // Validation 3: Double-Entry Accounting Rule (Strict integer paisa precision - Zero tolerance for discrepancy)
+  const toPaisa = (num) => Math.round((parseFloat(num) || 0) * 100);
+
+  let totalDebitPaisa = 0;
+  let totalCreditPaisa = 0;
+
+  if (lines.length < 2) {
+    return res.status(400).json({ success: false, error: 'दोहोरो लेखा प्रणाली अनुसार कम्तिमा २ वटा खाता पंक्ति (एक डेबिट र एक क्रेडिट) हुनु अनिवार्य छ। (Double entry accounting requires at least 2 lines).' });
+  }
 
   for (const line of lines) {
     if (!line.account_id) {
@@ -320,25 +326,28 @@ router.post('/', authenticateToken, requirePermission('voucher:create'), (req, r
     if (debit < 0 || credit < 0) {
       return res.status(400).json({ success: false, error: 'Debit and Credit amounts must be non-negative numbers.' });
     }
+    if (debit > 0 && credit > 0) {
+      return res.status(400).json({ success: false, error: 'एउटै हरफमा डेबिट र क्रेडिट दुवै रकम राख्न पाइँदैन। (A single line cannot have both Debit and Credit amounts).' });
+    }
     if (debit === 0 && credit === 0) {
       return res.status(400).json({ success: false, error: 'Line amount cannot be zero for both Debit and Credit.' });
     }
 
-    totalDebit += debit;
-    totalCredit += credit;
+    totalDebitPaisa += toPaisa(debit);
+    totalCreditPaisa += toPaisa(credit);
   }
 
-  totalDebit = Math.round(totalDebit * 100) / 100;
-  totalCredit = Math.round(totalCredit * 100) / 100;
-
-  if (Math.abs(totalDebit - totalCredit) > 0.01) {
+  if (totalDebitPaisa !== totalCreditPaisa || totalDebitPaisa <= 0) {
+    const debitRs = (totalDebitPaisa / 100).toFixed(2);
+    const creditRs = (totalCreditPaisa / 100).toFixed(2);
+    const diffRs = (Math.abs(totalDebitPaisa - totalCreditPaisa) / 100).toFixed(2);
     return res.status(400).json({
       success: false,
-      error: `Accounting double-entry validation failed: Total Debit (रु. ${totalDebit.toFixed(2)}) must equal Total Credit (रु. ${totalCredit.toFixed(2)}). Difference: रु. ${Math.abs(totalDebit - totalCredit).toFixed(2)}`
+      error: `दोहोरो लेखा नियन्त्रण असफल: कुल डेबिट (रु. ${debitRs}) र कुल क्रेडिट (रु. ${creditRs}) बराबर हुनैपर्छ। फरक: रु. ${diffRs}`
     });
   }
 
-  const voucherTotal = totalDebit; // or totalCredit (both equal)
+  const voucherTotal = totalDebitPaisa / 100;
 
   // Validation 4: Approval Threshold Evaluation
   const org = db.prepare('SELECT approval_threshold, auto_manager_review FROM organizations LIMIT 1').get() || { approval_threshold: 50000 };
@@ -365,7 +374,7 @@ router.post('/', authenticateToken, requirePermission('voucher:create'), (req, r
   const amountWordsNe = amountToNepaliWords(voucherTotal);
   const amountWordsEn = amountToEnglishWords(voucherTotal);
 
-  // Execute atomic transactional insertion
+  // Execute atomic transactional insertion with concurrency retry
   let voucherId;
   let voucherNumber;
 
@@ -404,19 +413,21 @@ router.post('/', authenticateToken, requirePermission('voucher:create'), (req, r
 
     voucherId = result.lastInsertRowid;
 
-    // Insert voucher lines
+    // Insert voucher lines with exact rounded cents
     const insertLine = db.prepare(`
       INSERT INTO voucher_lines (voucher_id, account_id, particulars, debit_amount, credit_amount, line_order)
       VALUES (?, ?, ?, ?, ?, ?)
     `);
 
     lines.forEach((line, idx) => {
+      const d = Math.round((parseFloat(line.debit_amount) || 0) * 100) / 100;
+      const c = Math.round((parseFloat(line.credit_amount) || 0) * 100) / 100;
       insertLine.run(
         voucherId,
         line.account_id,
         line.particulars || '',
-        parseFloat(line.debit_amount) || 0,
-        parseFloat(line.credit_amount) || 0,
+        d,
+        c,
         idx + 1
       );
     });

@@ -77,7 +77,8 @@ export const VoucherPrintModal = ({ voucherId, onClose, onPrintSuccess }) => {
     registration_no: 'दर्ता नं. १७/०७९/८०, गोकर्णेश्वर नगरपालिका वडा नं. ८',
     pan_no: '६२४३३८४७१',
     address_ne: 'गोकर्णेश्वर नगरपालिका-८, जोरपाटी, नेपाल',
-    phone: '+977-1-9768595892'
+    phone: '+977-1-9768595892',
+    email: 'positivesaccos@gmail.com'
   };
 
   const isLocked = voucher.requires_approval === 1 && voucher.status !== 'APPROVED' && voucher.status !== 'PRINTED' && voucher.status !== 'VERIFIED';
@@ -110,37 +111,82 @@ export const VoucherPrintModal = ({ voucherId, onClose, onPrintSuccess }) => {
             padding: '2px 8px',
             borderRadius: '4px',
             transform: 'rotate(-4deg)',
-            backgroundColor: '#fee2e2'
+            backgroundColor: '#fee2e2',
+            zIndex: 10
           }}>
             प्रतिलिपि (REPRINT #{reprintNumber})
           </div>
         )}
 
-        {/* Copy Indicator Pill */}
-        <div style={{
-          display: 'inline-block',
-          backgroundColor: isCustomer ? '#dbeafe' : '#fef3c7',
-          color: isCustomer ? '#1e40af' : '#92400e',
-          fontWeight: 700,
-          fontSize: '10px',
-          padding: '2px 8px',
-          borderRadius: '4px',
-          marginBottom: '4px',
-          border: `1px solid ${isCustomer ? '#bfdbfe' : '#fde68a'}`
-        }}>
-          {copyTitle}
+        {/* Top Header Row with Copy Badge & Slogan */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+          <div style={{
+            display: 'inline-block',
+            backgroundColor: isCustomer ? '#dbeafe' : '#fef3c7',
+            color: isCustomer ? '#1e40af' : '#92400e',
+            fontWeight: 700,
+            fontSize: '10px',
+            padding: '2px 8px',
+            borderRadius: '4px',
+            border: `1px solid ${isCustomer ? '#bfdbfe' : '#fde68a'}`
+          }}>
+            {copyTitle}
+          </div>
+          <div style={{ fontSize: '10px', color: '#065f46', fontWeight: 700, fontStyle: 'italic' }}>
+            “साझा बचत, साझा समृद्धि”
+          </div>
         </div>
 
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '8px', borderBottom: '1px solid #e2e8f0', paddingBottom: '6px' }}>
-          <h2 style={{ fontSize: '15px', fontWeight: 800, color: '#064e3b', margin: 0 }}>
-            {org.name_ne}
-          </h2>
-          <div style={{ fontSize: '12px', fontWeight: 700, color: '#1e293b' }}>
-            {org.name_en}
+        {/* Organization Brand Header with Official Logo */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          marginBottom: '8px',
+          borderBottom: '2px solid #064e3b',
+          paddingBottom: '6px'
+        }}>
+          {/* Logo on Left */}
+          <div style={{ flexShrink: 0, width: '64px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <img
+              src={org.logo_url || '/logo.png'}
+              alt="Positive SACCOS Logo"
+              style={{ width: '62px', height: '62px', objectFit: 'contain' }}
+              onError={(e) => { e.target.style.display = 'none'; }}
+            />
           </div>
-          <div style={{ fontSize: '10px', color: '#64748b' }}>
-            {org.address_ne} | फोन: {org.phone} | स्थायी लेखा नं. (PAN): {org.pan_no} | दर्ता: {org.registration_no}
+
+          {/* Central Title & Full Legal Details */}
+          <div style={{ flex: 1, textAlign: 'center' }}>
+            <h2 style={{ fontSize: '15.5px', fontWeight: 800, color: '#064e3b', margin: 0, letterSpacing: '0.2px' }}>
+              {org.name_ne || 'पोजिटिभ बचत तथा ऋण सहकारी संस्था लि.'}
+            </h2>
+            <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#0f172a', marginTop: '1px' }}>
+              {org.name_en || 'Positive Saving & Credit Co-operative Ltd.'}
+            </div>
+            <div style={{ fontSize: '10px', color: '#334155', marginTop: '2px' }}>
+              {org.address_ne || 'गोकर्णेश्वर नगरपालिका-८, जोरपाटी, नेपाल'} | फोन: {org.phone || '+977-1-9768595892'} | इमेल: {org.email || 'positivesaccos@gmail.com'}
+            </div>
+            <div style={{ fontSize: '9.5px', color: '#475569', marginTop: '1px', fontWeight: 600 }}>
+              {org.registration_no || 'दर्ता नं. १७/०७९/८०, गोकर्णेश्वर नगरपालिका वडा नं. ८'} | स्थायी लेखा नं. (PAN): {org.pan_no || '६२४३३८४७१'}
+            </div>
+          </div>
+
+          {/* Estd & Tagline Info on Right */}
+          <div style={{ flexShrink: 0, textAlign: 'right', fontSize: '10px', color: '#064e3b', minWidth: '70px' }}>
+            <div style={{
+              display: 'inline-block',
+              padding: '2px 6px',
+              backgroundColor: '#ecfdf5',
+              border: '1px solid #a7f3d0',
+              borderRadius: '4px',
+              fontWeight: 700
+            }}>
+              स्था. २०७९
+            </div>
+            <div style={{ fontSize: '8.5px', color: '#64748b', marginTop: '2px' }}>
+              Estd. 2022
+            </div>
           </div>
         </div>
 

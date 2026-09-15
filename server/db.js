@@ -11,9 +11,11 @@ if (!fs.existsSync(dbDir)) {
 const dbPath = path.join(dbDir, 'positive_saccos.db');
 const db = new Database(dbPath);
 
-// Enable WAL mode and foreign key constraints
+// Enable WAL mode, foreign key constraints, busy timeout, and normal synchronous mode
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
+db.pragma('busy_timeout = 10000');
+db.pragma('synchronous = NORMAL');
 
 function initSchema() {
   db.exec(`
@@ -239,6 +241,15 @@ function initSchema() {
       is_active INTEGER NOT NULL DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
+
+    -- High Performance Financial & Audit Indices
+    CREATE INDEX IF NOT EXISTS idx_vouchers_date_bs ON vouchers(voucher_date_bs);
+    CREATE INDEX IF NOT EXISTS idx_vouchers_status ON vouchers(status);
+    CREATE INDEX IF NOT EXISTS idx_vouchers_fy_type ON vouchers(fiscal_year_id, voucher_type_id);
+    CREATE INDEX IF NOT EXISTS idx_voucher_lines_account ON voucher_lines(account_id);
+    CREATE INDEX IF NOT EXISTS idx_voucher_lines_voucher ON voucher_lines(voucher_id);
+    CREATE INDEX IF NOT EXISTS idx_audit_entity ON audit_logs(entity_type, entity_id);
+    CREATE INDEX IF NOT EXISTS idx_audit_created ON audit_logs(created_at);
   `);
 }
 

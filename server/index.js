@@ -12,13 +12,45 @@ const voucherRoutes = require('./routes/voucherRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const backupRoutes = require('./routes/backupRoutes');
 
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middlewares
+// Security Middlewares
+app.use(helmet({
+  contentSecurityPolicy: false, // Allows inline images/SVGs for voucher printing
+  crossOriginEmbedderPolicy: false
+}));
+
+// Rate limiter for login to prevent brute force attacks
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30, // 30 attempts per IP per window
+  message: {
+    success: false,
+    error: 'धेरै पटक गलत लगइन प्रयास भयो। कृपया केही समयपछि पुन: प्रयास गर्नुहोस्। (Too many login attempts. Please try again later.)'
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+// General API rate limiter for DoS protection
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 2000, // 2000 requests per 15 mins
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+app.use('/api/auth/login', loginLimiter);
+app.use('/api/', apiLimiter);
+
+// General Middlewares
 app.use(cors());
-app.use(express.json({ limit: '20mb' }));
-app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Static uploads directory
 const uploadsDir = path.resolve(__dirname, '..', 'uploads');

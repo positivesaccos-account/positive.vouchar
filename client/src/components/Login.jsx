@@ -55,11 +55,35 @@ export const Login = () => {
         </div>
 
         <div className="login-header">
-          <div className="login-logo">
-            <Shield size={34} color="white" />
+          <div style={{
+            width: '86px',
+            height: '86px',
+            margin: '0 auto 12px',
+            borderRadius: '50%',
+            backgroundColor: '#ffffff',
+            padding: '3px',
+            boxShadow: '0 8px 24px rgba(6, 78, 59, 0.22)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '2px solid #a7f3d0'
+          }}>
+            <img
+              src="/logo.png"
+              alt="Positive SACCOS Logo"
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              onError={(e) => { e.target.style.display = 'none'; }}
+            />
           </div>
-          <h1>{lang === 'ne' ? (orgSettings?.name_ne || t.appTitle) : (orgSettings?.name_en || t.appTitle)}</h1>
-          <p>{t.appSubtitle}</p>
+          <h1 style={{ fontSize: '17.5px', fontWeight: 800, color: '#064e3b', marginBottom: '3px', lineHeight: 1.3 }}>
+            {lang === 'ne' ? (orgSettings?.name_ne || 'पोजिटिभ बचत तथा ऋण सहकारी संस्था लि.') : (orgSettings?.name_en || 'Positive Saving & Credit Co-operative Ltd.')}
+          </h1>
+          <div style={{ fontSize: '12px', fontWeight: 700, color: '#047857', letterSpacing: '0.3px', marginBottom: '3px' }}>
+            “साझा बचत, साझा समृद्धि”
+          </div>
+          <p style={{ fontSize: '11.5px', color: '#64748b', margin: 0 }}>
+            {t.appSubtitle} | स्था. २०७९ | गोकर्णेश्वर-८, जोरपाटी
+          </p>
         </div>
 
         {error && (

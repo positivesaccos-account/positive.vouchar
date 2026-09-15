@@ -48,12 +48,17 @@ export const Sidebar = ({ activeTab, setActiveTab, dashboardStats }) => {
   return (
     <aside className="app-sidebar">
       <div className="sidebar-header">
-        <div className="org-logo-badge">
-          <span>पो</span>
+        <div className="org-logo-badge" style={{ background: '#ffffff', padding: '2px', borderRadius: '50%', overflow: 'hidden', boxShadow: '0 0 10px rgba(0,0,0,0.3)' }}>
+          <img
+            src="/logo.png"
+            alt="Positive SACCOS Logo"
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
         </div>
         <div className="sidebar-title-box">
-          <h1>{lang === 'ne' ? (orgSettings?.name_ne || 'पोजिटिभ साकोस') : (orgSettings?.name_en || 'Positive SACCOS')}</h1>
-          <p>लेखा तथा भौचर प्रणाली</p>
+          <h1 style={{ fontSize: '13.5px', lineHeight: '1.2' }}>{lang === 'ne' ? 'पोजिटिभ साकोस' : 'Positive SACCOS'}</h1>
+          <p style={{ fontSize: '10px', color: '#34d399', fontWeight: 600 }}>साझा बचत, साझा समृद्धि</p>
         </div>
       </div>
 

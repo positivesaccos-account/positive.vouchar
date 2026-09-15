@@ -18,6 +18,7 @@ export const SettingsView = ({ onSettingsSaved }) => {
     address_ne: '',
     phone: '',
     email: '',
+    logo_url: '/logo.png',
     currency_symbol: 'रु.',
     approval_threshold: 50000,
     auto_manager_review: 1
@@ -45,6 +46,7 @@ export const SettingsView = ({ onSettingsSaved }) => {
         address_ne: orgSettings.address_ne || '',
         phone: orgSettings.phone || '',
         email: orgSettings.email || '',
+        logo_url: orgSettings.logo_url || '/logo.png',
         currency_symbol: orgSettings.currency_symbol || 'रु.',
         approval_threshold: orgSettings.approval_threshold || 50000,
         auto_manager_review: orgSettings.auto_manager_review ?? 1
@@ -307,6 +309,73 @@ export const SettingsView = ({ onSettingsSaved }) => {
                 value={orgForm.email}
                 onChange={e => setOrgForm({ ...orgForm, email: e.target.value })}
               />
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '18px' }}>
+            <div className="form-group">
+              <label className="form-label">सहकारी लोगो फाइल मार्ग (Logo Path)</label>
+              <input
+                type="text"
+                className="form-input"
+                value={orgForm.logo_url}
+                onChange={e => setOrgForm({ ...orgForm, logo_url: e.target.value })}
+              />
+            </div>
+          </div>
+
+          {/* Logo & Board Banner Preview Box */}
+          <div style={{
+            marginTop: '16px',
+            padding: '16px 20px',
+            backgroundColor: '#f8fafc',
+            border: '1px solid #e2e8f0',
+            borderRadius: 'var(--radius-md)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '16px',
+            flexWrap: 'wrap'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <div style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '50%',
+                backgroundColor: '#ffffff',
+                padding: '2px',
+                border: '2px solid #10b981',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <img
+                  src={orgForm.logo_url || '/logo.png'}
+                  alt="Logo"
+                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+              </div>
+              <div>
+                <strong style={{ fontSize: '13px', color: '#064e3b' }}>सहकारीको आधिकारिक लोगो (Official Logo)</strong>
+                <p style={{ fontSize: '11px', color: '#64748b', margin: '2px 0 0 0' }}>
+                  यो लोगो सम्पूर्ण भौचर प्रिन्ट, लगइन स्क्रिन तथा ड्यासबोर्डमा स्वतः प्रयोग हुन्छ।
+                </p>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <a
+                href="/board_banner.png"
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-outline"
+                style={{ fontSize: '12px', padding: '6px 12px' }}
+              >
+                मूल बोर्ड ब्यानर हेर्नुहोस् (Original Board Banner)
+              </a>
             </div>
           </div>
 
