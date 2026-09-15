@@ -74,10 +74,10 @@ export const VoucherPrintModal = ({ voucherId, onClose, onPrintSuccess }) => {
   const org = orgSettings || {
     name_ne: 'पोजिटिभ बचत तथा ऋण सहकारी संस्था लि.',
     name_en: 'Positive Saving & Credit Co-operative Ltd.',
-    registration_no: 'डिभिजन सहकारी कार्यालय दर्ता नं. ७८९०/०६५',
-    pan_no: '३०२४५६७८९',
-    address_ne: 'काठमाडौँ, नेपाल',
-    phone: '+977-1-4567890 / 9851000000'
+    registration_no: 'दर्ता नं. १७/०७९/८०, गोकर्णेश्वर नगरपालिका वडा नं. ८',
+    pan_no: '६२४३३८४७१',
+    address_ne: 'गोकर्णेश्वर नगरपालिका-८, जोरपाटी, नेपाल',
+    phone: '+977-1-9768595892'
   };
 
   const isLocked = voucher.requires_approval === 1 && voucher.status !== 'APPROVED' && voucher.status !== 'PRINTED' && voucher.status !== 'VERIFIED';
